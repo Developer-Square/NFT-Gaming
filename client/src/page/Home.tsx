@@ -1,8 +1,15 @@
 import React, { ReactElement } from 'react';
+import { useGlobalContext } from '../../context';
 import { PageHOC } from '../components';
 
 const Home = (): ReactElement => {
-  return <div></div>;
+  // @ts-ignore
+  const { contract, walletAddress } = useGlobalContext();
+  return (
+    <div>
+      <h1 className='text-xl text-white'>{walletAddress}</h1>
+    </div>
+  );
 };
 
 export default PageHOC(
