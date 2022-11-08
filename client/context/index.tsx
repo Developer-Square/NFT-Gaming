@@ -1,5 +1,7 @@
 import React, {
   createContext,
+  Dispatch,
+  SetStateAction,
   useContext,
   useEffect,
   useRef,
@@ -11,9 +13,17 @@ import { useNavigate } from 'react-router-dom';
 
 import { CONTRACT_ADDRESS, ABI } from '../contract';
 
+interface IShowAlert {
+  status: boolean;
+  type: string;
+  message: string;
+}
+
 interface IGlobalContext {
   contract: Contract | undefined;
   walletAddress: string | undefined;
+  showAlert: IShowAlert;
+  setShowAlert: Dispatch<SetStateAction<IShowAlert>>;
 }
 
 // @ts-ignore
@@ -23,11 +33,16 @@ export const GlobalContextProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState('');
   const [provider, setProvider] = useState<ethers.providers.Web3Provider>();
   const [contract, setContract] = useState<Contract>();
+  const [showAlert, setShowAlert] = useState({
+    status: false,
+    type: 'info',
+    message: '',
+  });
 
   // Set the wallet address to the state.
   const updateContractAddress = async () => {
     const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
+      method: 'eth_accounts',
     });
 
     if (accounts) setWalletAddress(accounts[0]);
@@ -47,16 +62,27 @@ export const GlobalContextProvider = ({ children }) => {
       const newProvider = new ethers.providers.Web3Provider(connection);
       const signer = newProvider.getSigner();
       const newContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-
       setContract(newContract);
       setProvider(newProvider);
     };
 
     setSmartContractAndProvider();
-  });
+  }, [walletAddress]);
+
+  useEffect(() => {
+    if (showAlert?.status) {
+      const timer = setTimeout(() => {
+        setShowAlert({ status: false, type: 'info', message: '' });
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
 
   return (
-    <GlobalContext.Provider value={{ contract, walletAddress }}>
+    <GlobalContext.Provider
+      value={{ contract, walletAddress, showAlert, setShowAlert }}
+    >
       {children}
     </GlobalContext.Provider>
   );

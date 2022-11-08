@@ -4,8 +4,28 @@ import { CustomButton, CustomInput, PageHOC } from '../components';
 
 const Home = (): ReactElement => {
   // @ts-ignore
-  const { contract, walletAddress } = useGlobalContext();
+  const { contract, walletAddress, setShowAlert } = useGlobalContext();
   const [playerName, setPlayerName] = useState('');
+
+  const handleClick = async () => {
+    try {
+      const playerExists = await contract?.isPlayer(walletAddress);
+      if (!playerExists) {
+        await contract?.registerPlayer(playerName, playerName);
+        setShowAlert({
+          status: true,
+          type: 'info',
+          message: `${playerName} is being summoned!`,
+        });
+      }
+    } catch (error) {
+      setShowAlert({
+        status: true,
+        type: 'failure',
+        message: 'Something went wrong!',
+      });
+    }
+  };
 
   return (
     <div className='flex flex-col'>
@@ -16,7 +36,11 @@ const Home = (): ReactElement => {
         onChangeHandler={setPlayerName}
       />
 
-      <CustomButton title='Register' handleClick={() => {}} restStyles='mt-6' />
+      <CustomButton
+        title='Register'
+        handleClick={handleClick}
+        restStyles='mt-6'
+      />
     </div>
   );
 };

@@ -2,7 +2,9 @@ import React, { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { logo, heroImg } from '../assets';
+import { useGlobalContext } from '../../context';
 import styles from '../styles';
+import Alert from './Alert';
 
 const PageHOC =
   (
@@ -12,8 +14,12 @@ const PageHOC =
   ) =>
   () => {
     const navigate = useNavigate();
+    const { showAlert } = useGlobalContext();
     return (
       <div className={styles.hocContainer}>
+        {showAlert.status ? (
+          <Alert type={showAlert.type} message={showAlert.message} />
+        ) : null}
         <div className={styles.hocContentBox}>
           <img
             src={logo}
