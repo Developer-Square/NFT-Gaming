@@ -1,4 +1,6 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { useGlobalContext } from '../../context';
 import { CustomButton, CustomInput, PageHOC } from '../components';
 
@@ -6,6 +8,7 @@ const Home = (): ReactElement => {
   // @ts-ignore
   const { contract, walletAddress, setShowAlert } = useGlobalContext();
   const [playerName, setPlayerName] = useState('');
+  const navigate = useNavigate();
 
   const handleClick = async () => {
     try {
@@ -26,6 +29,17 @@ const Home = (): ReactElement => {
       });
     }
   };
+
+  useEffect(() => {
+    const checkForPlayerToken = async () => {
+      const playerExists = await contract?.isPlayer(walletAddress);
+      const playerTokenExists = await contract?.isPlayerToken(walletAddress);
+
+      if (playerExists && playerTokenExists) navigate('/create-battle');
+    };
+
+    if (contract) checkForPlayerToken();
+  }, [contract]);
 
   return (
     <div className='flex flex-col'>

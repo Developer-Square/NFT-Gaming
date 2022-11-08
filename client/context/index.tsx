@@ -12,8 +12,9 @@ import Web3Modal from 'web3modal';
 import { useNavigate } from 'react-router-dom';
 
 import { CONTRACT_ADDRESS, ABI } from '../contract';
+import { createEventListeners } from './createEventListeners';
 
-interface IShowAlert {
+export interface IShowAlert {
   status: boolean;
   type: string;
   message: string;
@@ -30,8 +31,9 @@ interface IGlobalContext {
 const GlobalContext = createContext<IGlobalContext>();
 
 export const GlobalContextProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [walletAddress, setWalletAddress] = useState('');
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider>();
+  const [provider, setProvider] = useState<any>();
   const [contract, setContract] = useState<Contract>();
   const [showAlert, setShowAlert] = useState({
     status: false,
@@ -68,6 +70,18 @@ export const GlobalContextProvider = ({ children }) => {
 
     setSmartContractAndProvider();
   }, [walletAddress]);
+
+  useEffect(() => {
+    if (contract) {
+      createEventListeners({
+        navigate,
+        contract,
+        provider,
+        walletAddress,
+        setShowAlert,
+      });
+    }
+  }, [contract]);
 
   useEffect(() => {
     if (showAlert?.status) {
