@@ -5,7 +5,7 @@ import styles from '../styles';
 type Props = {
   title: string;
   handleClick: () => void;
-  restStyles: string;
+  restStyles?: string;
 };
 
 const CustomButton = ({ title, handleClick, restStyles }: Props) => {

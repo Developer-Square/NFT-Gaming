@@ -11,7 +11,7 @@ import { Contract, ethers } from 'ethers';
 import Web3Modal from 'web3modal';
 import { useNavigate } from 'react-router-dom';
 
-import { CONTRACT_ADDRESS, ABI } from '../contract';
+import { CONTRACT_ADDRESS, ABI } from '../../contract';
 import { createEventListeners } from './createEventListeners';
 
 export interface IShowAlert {
@@ -27,6 +27,13 @@ interface IGlobalContext {
   setShowAlert: Dispatch<SetStateAction<IShowAlert>>;
   battleName: string;
   setBattleName: Dispatch<SetStateAction<string>>;
+  gameData: IGameData;
+}
+
+interface IGameData {
+  players: string[];
+  pendingBattles: { string: any }[];
+  activeBattle: { string: any }[];
 }
 
 // @ts-ignore
@@ -43,6 +50,12 @@ export const GlobalContextProvider = ({ children }) => {
     message: '',
   });
   const [battleName, setBattleName] = useState('');
+  const [gameData, setGameData] = useState<IGameData>({
+    players: [],
+    pendingBattles: [],
+    activeBattle: [],
+  });
+  const [updateGameData, setUpdateGameData] = useState(0);
 
   // Set the wallet address to the state.
   const updateContractAddress = async () => {
@@ -82,6 +95,7 @@ export const GlobalContextProvider = ({ children }) => {
         provider,
         walletAddress,
         setShowAlert,
+        setUpdateGameData,
       });
     }
   }, [contract]);
@@ -96,6 +110,37 @@ export const GlobalContextProvider = ({ children }) => {
     }
   }, [showAlert]);
 
+  // Set game data to state
+  useEffect(() => {
+    const fetchGameData = async () => {
+      const fetchedBattles = await contract?.getAllBattles();
+      const pendingBattles = fetchedBattles.filter(
+        (battle) => battle.battleStatus === 0
+      );
+      let activeBattle = [];
+
+      fetchedBattles.forEach((battle) => {
+        if (
+          battle.players.find(
+            (player) => player.toLowerCase() === walletAddress.toLowerCase()
+          )
+        ) {
+          if (battle.winner.startsWith('0x00')) {
+            activeBattle = battle;
+          }
+        }
+      });
+
+      setGameData({
+        ...gameData,
+        activeBattle,
+        pendingBattles: pendingBattles.slice(1),
+      });
+    };
+
+    if (contract) fetchGameData();
+  }, [contract, updateGameData]);
+
   return (
     <GlobalContext.Provider
       value={{
@@ -105,6 +150,7 @@ export const GlobalContextProvider = ({ children }) => {
         setShowAlert,
         battleName,
         setBattleName,
+        gameData,
       }}
     >
       {children}

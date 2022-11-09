@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useGlobalContext } from '../../context';
+import { useGlobalContext } from '../context';
 import { CustomButton, CustomInput, PageHOC } from '../components';
 
 const Home = (): ReactElement => {

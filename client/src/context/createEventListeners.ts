@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { IShowAlert } from '.';
 
-import { ABI } from '../contract';
+import { ABI } from '../../contract';
 
 interface IEventListeners {
   navigate: NavigateFunction;
@@ -11,6 +11,7 @@ interface IEventListeners {
   provider: any;
   walletAddress: string;
   setShowAlert: Dispatch<SetStateAction<IShowAlert>>;
+  setUpdateGameData: Dispatch<SetStateAction<number>>;
 }
 
 const addNewEvent = (eventFilter, provider, cb) => {
@@ -29,6 +30,7 @@ export const createEventListeners = ({
   provider,
   walletAddress,
   setShowAlert,
+  setUpdateGameData,
 }: IEventListeners) => {
   const newPlayerEventFilter = contract.filters.NewPlayer();
 
@@ -42,5 +44,20 @@ export const createEventListeners = ({
         message: 'Player has been successfully registered',
       });
     }
+  });
+
+  const newBattleEventFilter = contract.filters.NewBattle();
+
+  addNewEvent(newBattleEventFilter, provider, ({ args }) => {
+    console.log('New battle started!', args, walletAddress);
+
+    if (
+      walletAddress.toLowerCase() === args.player1.toLowerCase() ||
+      walletAddress.toLowerCase() === args.player2.toLowerCase()
+    ) {
+      navigate(`/battle/${args.battleName}`);
+    }
+
+    setUpdateGameData((prevUpdateGameData) => prevUpdateGameData + 1);
   });
 };

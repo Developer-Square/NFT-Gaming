@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { logo, heroImg } from '../assets';
-import { useGlobalContext } from '../../context';
+import { useGlobalContext } from '../context';
 import styles from '../styles';
 import Alert from './Alert';
 

@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { Home, CreateBattle, JoinBattle } from './page';
 import './index.css';
-import { GlobalContextProvider } from '../context';
+import { GlobalContextProvider } from './context';
 
 // @ts-ignore
 ReactDOM.createRoot(document.getElementById('root')).render(
