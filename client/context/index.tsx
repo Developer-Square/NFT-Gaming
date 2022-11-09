@@ -25,6 +25,8 @@ interface IGlobalContext {
   walletAddress: string | undefined;
   showAlert: IShowAlert;
   setShowAlert: Dispatch<SetStateAction<IShowAlert>>;
+  battleName: string;
+  setBattleName: Dispatch<SetStateAction<string>>;
 }
 
 // @ts-ignore
@@ -40,6 +42,7 @@ export const GlobalContextProvider = ({ children }) => {
     type: 'info',
     message: '',
   });
+  const [battleName, setBattleName] = useState('');
 
   // Set the wallet address to the state.
   const updateContractAddress = async () => {
@@ -95,7 +98,14 @@ export const GlobalContextProvider = ({ children }) => {
 
   return (
     <GlobalContext.Provider
-      value={{ contract, walletAddress, showAlert, setShowAlert }}
+      value={{
+        contract,
+        walletAddress,
+        showAlert,
+        setShowAlert,
+        battleName,
+        setBattleName,
+      }}
     >
       {children}
     </GlobalContext.Provider>

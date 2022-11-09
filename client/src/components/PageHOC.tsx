@@ -8,7 +8,7 @@ import Alert from './Alert';
 
 const PageHOC =
   (
-    Component: () => ReactElement,
+    Component: (props) => ReactElement,
     title: JSX.Element,
     description: JSX.Element
   ) =>
