@@ -22,6 +22,7 @@ export interface IPlayer {
   health: number;
   mana: number;
   playerName?: string;
+  playerAddress?: string;
 }
 
 const Battle = (props: Props): ReactElement => {
@@ -128,7 +129,7 @@ const Battle = (props: Props): ReactElement => {
         </div>
       </div>
 
-      <PlayerInfo player={player1} playerIcon={player01Icon} mt />
+      <PlayerInfo player={player1} playerIcon={player01Icon} />
 
       <GameInfo />
     </div>
