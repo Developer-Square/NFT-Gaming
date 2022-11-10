@@ -28,6 +28,8 @@ interface IGlobalContext {
   battleName: string;
   setBattleName: Dispatch<SetStateAction<string>>;
   gameData: IGameData;
+  battleGround: string;
+  setBattleGround: Dispatch<SetStateAction<string>>;
 }
 
 interface IGameData {
@@ -56,6 +58,7 @@ export const GlobalContextProvider = ({ children }) => {
     activeBattle: [],
   });
   const [updateGameData, setUpdateGameData] = useState(0);
+  const [battleGround, setBattleGround] = useState('bg-astral');
 
   // Set the wallet address to the state.
   const updateContractAddress = async () => {
@@ -151,6 +154,8 @@ export const GlobalContextProvider = ({ children }) => {
         battleName,
         setBattleName,
         gameData,
+        battleGround,
+        setBattleGround,
       }}
     >
       {children}

@@ -51,6 +51,7 @@ const JoinBattle = (props: Props): ReactElement => {
                 </p>
                 <CustomButton
                   title='Join'
+                  // @ts-ignore
                   handleClick={() => handleClick(battle.name)}
                 />
               </div>
