@@ -33,7 +33,7 @@ const styles = {
   gameContainer:
     'w-screen min-h-screen bg-cover bg-no-repeat bg-center flex-col',
   gameMoveBox:
-    'sm:w-20 w-14 sm:h-20 h-14 rounded-full cursor-pointer border-[2px]',
+    'sm:w-16 w-12 sm:h-16 h-12 rounded-full cursor-pointer border-[2px]',
   gameMoveIcon: 'w-1/2 h-1/w-1/2 object-contain',
 
   // player info component

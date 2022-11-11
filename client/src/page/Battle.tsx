@@ -113,7 +113,7 @@ const Battle = (props: Props): ReactElement => {
           <ActionButton
             imgUrl={attack}
             handleClick={() => {}}
-            restStyles='mr-2 hover:border-yellow-400'
+            restStyles='hover:border-yellow-400'
           />
           <Card
             card={player1}
@@ -124,7 +124,7 @@ const Battle = (props: Props): ReactElement => {
           <ActionButton
             imgUrl={defense}
             handleClick={() => {}}
-            restStyles='ml-6 hover:border-red-600'
+            restStyles='hover:border-red-600'
           />
         </div>
       </div>
