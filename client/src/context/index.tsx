@@ -70,6 +70,16 @@ export const GlobalContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    const battleGroundFromLocalStorage = localStorage.getItem('BattleGround');
+
+    if (battleGroundFromLocalStorage) {
+      setBattleGround(battleGroundFromLocalStorage);
+    } else {
+      localStorage.setItem('BattleGround', battleGround);
+    }
+  }, []);
+
+  useEffect(() => {
     updateContractAddress();
 
     window.ethereum.on('accountsChanged', updateContractAddress);
