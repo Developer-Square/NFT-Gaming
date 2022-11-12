@@ -33,6 +33,7 @@ const Battle = (props: Props): ReactElement => {
     showAlert,
     setShowAlert,
     battleGround,
+    setErrorMessage,
   } = useGlobalContext();
   const [player1, setPlayer1] = useState<IPlayer>();
   const [player2, setPlayer2] = useState<IPlayer>();
@@ -88,7 +89,7 @@ const Battle = (props: Props): ReactElement => {
           mana: p2M,
         });
       } catch (error) {
-        console.log(error);
+        setErrorMessage(error);
       }
     };
 
@@ -96,6 +97,22 @@ const Battle = (props: Props): ReactElement => {
       getPlayerInfo();
     }
   }, [contract, gameData, battleName]);
+
+  const makeAMove = async (choice: number) => {
+    playAudio(choice === 1 ? attackSound : defenseSound);
+
+    try {
+      await contract?.attackOrDefendChoice(choice, battleName);
+
+      setShowAlert({
+        status: true,
+        type: 'info',
+        message: `Initiating ${choice === 1 ? 'attack' : 'defense'}`,
+      });
+    } catch (error) {
+      setErrorMessage(error);
+    }
+  };
 
   return (
     <div
@@ -112,7 +129,7 @@ const Battle = (props: Props): ReactElement => {
         <div className='flex items-center flex-row'>
           <ActionButton
             imgUrl={attack}
-            handleClick={() => {}}
+            handleClick={() => makeAMove(1)}
             restStyles='hover:border-yellow-400'
           />
           <Card
@@ -123,7 +140,7 @@ const Battle = (props: Props): ReactElement => {
           />
           <ActionButton
             imgUrl={defense}
-            handleClick={() => {}}
+            handleClick={() => makeAMove(2)}
             restStyles='hover:border-red-600'
           />
         </div>

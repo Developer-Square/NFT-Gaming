@@ -6,7 +6,8 @@ import { CustomButton, CustomInput, GameLoad, PageHOC } from '../components';
 import styles from '../styles';
 
 const CreateBattle = (): ReactElement => {
-  const { battleName, setBattleName, contract, gameData } = useGlobalContext();
+  const { battleName, setBattleName, contract, gameData, setErrorMessage } =
+    useGlobalContext();
   const navigate = useNavigate();
   const [waitBattle, setWaitBattle] = useState(false);
 
@@ -28,7 +29,7 @@ const CreateBattle = (): ReactElement => {
       await contract?.createBattle(battleName);
       setWaitBattle(true);
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
     }
   };
   return (

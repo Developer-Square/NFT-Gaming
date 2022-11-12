@@ -15,6 +15,7 @@ const JoinBattle = (props: Props): ReactElement => {
     setBattleName,
     contract,
     setShowAlert,
+    setErrorMessage,
   } = useGlobalContext();
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ const JoinBattle = (props: Props): ReactElement => {
         message: `Joining ${battle}`,
       });
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
     }
   };
   return (
