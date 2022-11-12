@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { CONTRACT_ADDRESS, ABI } from '../../contract';
 import { createEventListeners } from './createEventListeners';
+import { GetParams } from '../utils/onboard';
 
 export interface IShowAlert {
   status: boolean;
@@ -59,6 +60,7 @@ export const GlobalContextProvider = ({ children }) => {
   });
   const [updateGameData, setUpdateGameData] = useState(0);
   const [battleGround, setBattleGround] = useState('bg-astral');
+  const [step, setStep] = useState(1);
 
   // Set the wallet address to the state.
   const updateContractAddress = async () => {
@@ -77,6 +79,20 @@ export const GlobalContextProvider = ({ children }) => {
     } else {
       localStorage.setItem('BattleGround', battleGround);
     }
+  }, []);
+
+  // Reset web3 onboarding modal params
+  useEffect(() => {
+    const resetParams = async () => {
+      const currentStep = await GetParams();
+
+      setStep(currentStep.step);
+    };
+
+    resetParams();
+
+    window.ethereum.on('chainChanged', () => resetParams());
+    window.ethereum.on('accountsChanged', () => resetParams());
   }, []);
 
   useEffect(() => {
@@ -101,7 +117,7 @@ export const GlobalContextProvider = ({ children }) => {
   }, [walletAddress]);
 
   useEffect(() => {
-    if (contract) {
+    if (step !== -1 && contract) {
       createEventListeners({
         navigate,
         contract,

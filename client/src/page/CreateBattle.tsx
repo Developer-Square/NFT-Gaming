@@ -12,7 +12,11 @@ const CreateBattle = (): ReactElement => {
 
   useEffect(() => {
     // @ts-ignore
-    if (gameData.activeBattle.battleStatus === 0) {
+    if (gameData.activeBattle.battleStatus === 1) {
+      // @ts-ignore
+      navigate(`/battle/${gameData.activeBattle.name}`);
+      // @ts-ignore
+    } else if (gameData.activeBattle.battleStatus === 0) {
       setWaitBattle(true);
     }
   }, [gameData]);
