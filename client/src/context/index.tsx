@@ -35,6 +35,7 @@ interface IGlobalContext {
   setErrorMessage: Dispatch<SetStateAction<any>>;
   player1Ref: any;
   player2Ref: any;
+  updateContractAddress: () => void;
 }
 
 interface IGameData {
@@ -173,7 +174,9 @@ export const GlobalContextProvider = ({ children }) => {
   // Set game data to state
   useEffect(() => {
     const fetchGameData = async () => {
-      const fetchedBattles = await contract?.getAllBattles();
+      const fetchedBattles = await contract?.getAllBattles({
+        gasLimit: 200000,
+      });
       const pendingBattles = fetchedBattles.filter(
         (battle) => battle.battleStatus === 0
       );
@@ -217,6 +220,7 @@ export const GlobalContextProvider = ({ children }) => {
         setErrorMessage,
         player1Ref,
         player2Ref,
+        updateContractAddress,
       }}
     >
       {children}

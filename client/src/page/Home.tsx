@@ -6,7 +6,8 @@ import { CustomButton, CustomInput, PageHOC } from '../components';
 
 const Home = (): ReactElement => {
   // @ts-ignore
-  const { contract, walletAddress, setShowAlert } = useGlobalContext();
+  const { contract, walletAddress, setShowAlert, gameData, setErrorMessage } =
+    useGlobalContext();
   const [playerName, setPlayerName] = useState('');
   const navigate = useNavigate();
 
@@ -14,7 +15,9 @@ const Home = (): ReactElement => {
     try {
       const playerExists = await contract?.isPlayer(walletAddress);
       if (!playerExists) {
-        await contract?.registerPlayer(playerName, playerName);
+        await contract?.registerPlayer(playerName, playerName, {
+          gasLimit: 200000,
+        });
         setShowAlert({
           status: true,
           type: 'info',
@@ -22,11 +25,7 @@ const Home = (): ReactElement => {
         });
       }
     } catch (error) {
-      setShowAlert({
-        status: true,
-        type: 'failure',
-        message: 'Something went wrong!',
-      });
+      setErrorMessage(error);
     }
   };
 
@@ -40,6 +39,12 @@ const Home = (): ReactElement => {
 
     if (contract) checkForPlayerToken();
   }, [contract]);
+
+  useEffect(() => {
+    if (gameData.players.length > 0)
+      // @ts-ignore
+      navigate(`/battle/${gameData.activeBattle.name}`);
+  }, [gameData]);
 
   return (
     <div className='flex flex-col'>

@@ -19,11 +19,21 @@ const JoinBattle = (props: Props): ReactElement => {
   } = useGlobalContext();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // @ts-ignore
+    if (gameData.activeBattle.battleStatus === 1) {
+      // @ts-ignore
+      navigate(`/battle/${gameData.activeBattle.name}`);
+    }
+  }, [gameData]);
+
   const handleClick = async (battle: string) => {
     setBattleName(battle);
 
     try {
-      await contract?.joinBattle(battle);
+      await contract?.joinBattle(battle, {
+        gasLimit: 200000,
+      });
 
       setShowAlert({
         status: true,
