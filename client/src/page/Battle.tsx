@@ -118,7 +118,6 @@ const Battle = (props: Props): ReactElement => {
   };
 
   useEffect(() => {
-    console.log(gameData);
     const timer = setTimeout(() => {
       if (!gameData.activeBattle.length) {
         navigate('/');
