@@ -4,6 +4,8 @@ import { NavigateFunction } from 'react-router-dom';
 import { IShowAlert } from '.';
 
 import { ABI } from '../../contract';
+import { sparcle, playAudio } from '../utils/animation';
+import { defenseSound } from '../assets';
 
 interface IEventListeners {
   navigate: NavigateFunction;
@@ -12,7 +14,11 @@ interface IEventListeners {
   walletAddress: string;
   setShowAlert: Dispatch<SetStateAction<IShowAlert>>;
   setUpdateGameData: Dispatch<SetStateAction<number>>;
+  player1Ref: any;
+  player2Ref: any;
 }
+
+const emptyAccount = '0x0000000000000000000000000000000000000000';
 
 const addNewEvent = (eventFilter, provider, cb) => {
   provider.removeListener(eventFilter);
@@ -24,6 +30,15 @@ const addNewEvent = (eventFilter, provider, cb) => {
   });
 };
 
+const getCoords = (cardRef) => {
+  const { left, top, width, height } = cardRef.current.getBoundingClientRect();
+
+  return {
+    pageX: left + width / 2,
+    pageY: top + height / 2.25,
+  };
+};
+
 export const createEventListeners = ({
   navigate,
   contract,
@@ -31,6 +46,8 @@ export const createEventListeners = ({
   walletAddress,
   setShowAlert,
   setUpdateGameData,
+  player1Ref,
+  player2Ref,
 }: IEventListeners) => {
   const newPlayerEventFilter = contract.filters.NewPlayer();
 
@@ -65,5 +82,25 @@ export const createEventListeners = ({
 
   addNewEvent(battleMoveEventFilter, provider, ({ args }) => {
     console.log('Battle move initiated!', args);
+  });
+
+  const roundEndedEventFilter = contract.filters.RoundEnded();
+
+  addNewEvent(roundEndedEventFilter, provider, ({ args }) => {
+    console.log('Rounded ended!', args, walletAddress);
+
+    for (let i = 0; i < args.damagedPlayers.length; i++) {
+      if (args.damagedPlayers[i] !== emptyAccount) {
+        if (args.damagedPlayers[i] === walletAddress) {
+          sparcle(getCoords(player1Ref));
+        } else if (args.damagedPlayers[i] !== walletAddress) {
+          sparcle(getCoords(player2Ref));
+        }
+      } else {
+        playAudio(defenseSound);
+      }
+    }
+
+    setUpdateGameData((prevUpdateGameData) => prevUpdateGameData + 1);
   });
 };

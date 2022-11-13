@@ -33,6 +33,8 @@ interface IGlobalContext {
   setBattleGround: Dispatch<SetStateAction<string>>;
   errorMessage: any;
   setErrorMessage: Dispatch<SetStateAction<any>>;
+  player1Ref: any;
+  player2Ref: any;
 }
 
 interface IGameData {
@@ -64,6 +66,9 @@ export const GlobalContextProvider = ({ children }) => {
   const [battleGround, setBattleGround] = useState('bg-astral');
   const [step, setStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const player1Ref = useRef();
+  const player2Ref = useRef();
 
   // Set the wallet address to the state.
   const updateContractAddress = async () => {
@@ -102,16 +107,19 @@ export const GlobalContextProvider = ({ children }) => {
   useEffect(() => {
     if (errorMessage) {
       // @ts-ignore
-      const parsedErrorMessage = errorMessage.reason
-        .slice('execution reverted: '.length)
-        .slice(0, -1);
+      if (errorMessage.reason) {
+        // @ts-ignore
+        const parsedErrorMessage = errorMessage.reason
+          .slice('execution reverted: '.length)
+          .slice(0, -1);
 
-      if (parsedErrorMessage) {
-        setShowAlert({
-          status: true,
-          type: 'failure',
-          message: parsedErrorMessage,
-        });
+        if (parsedErrorMessage) {
+          setShowAlert({
+            status: true,
+            type: 'failure',
+            message: parsedErrorMessage,
+          });
+        }
       }
     }
   }, [errorMessage]);
@@ -146,6 +154,8 @@ export const GlobalContextProvider = ({ children }) => {
         walletAddress,
         setShowAlert,
         setUpdateGameData,
+        player1Ref,
+        player2Ref,
       });
     }
   }, [contract]);
@@ -205,6 +215,8 @@ export const GlobalContextProvider = ({ children }) => {
         setBattleGround,
         errorMessage,
         setErrorMessage,
+        player1Ref,
+        player2Ref,
       }}
     >
       {children}

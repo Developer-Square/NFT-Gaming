@@ -34,6 +34,8 @@ const Battle = (props: Props): ReactElement => {
     setShowAlert,
     battleGround,
     setErrorMessage,
+    player1Ref,
+    player2Ref,
   } = useGlobalContext();
   const [player1, setPlayer1] = useState<IPlayer>();
   const [player2, setPlayer2] = useState<IPlayer>();
@@ -71,8 +73,8 @@ const Battle = (props: Props): ReactElement => {
         const p1Def = p1TokenData?.defenseStrength.toNumber();
         const p1H = player01.playerHealth.toNumber();
         const p1M = player01.playerMana.toNumber();
-        const p2H = player01.playerHealth.toNumber();
-        const p2M = player01.playerMana.toNumber();
+        const p2H = player02.playerHealth.toNumber();
+        const p2M = player02.playerMana.toNumber();
 
         setPlayer1({
           ...player01,
@@ -110,9 +112,21 @@ const Battle = (props: Props): ReactElement => {
         message: `Initiating ${choice === 1 ? 'attack' : 'defense'}`,
       });
     } catch (error) {
+      console.log(error);
       setErrorMessage(error);
     }
   };
+
+  useEffect(() => {
+    console.log(gameData);
+    const timer = setTimeout(() => {
+      if (!gameData.activeBattle.length) {
+        navigate('/');
+      }
+    }, 3500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div
@@ -124,7 +138,12 @@ const Battle = (props: Props): ReactElement => {
 
       <PlayerInfo player={player2} playerIcon={player02Icon} mt />
       <div className={`${styles.flexCenter} flex-col my-10`}>
-        <Card card={player2} title={player2?.playerName} cardRef='' playerTwo />
+        <Card
+          card={player2}
+          title={player2?.playerName}
+          cardRef={player2Ref}
+          playerTwo
+        />
 
         <div className='flex items-center flex-row'>
           <ActionButton
@@ -135,7 +154,7 @@ const Battle = (props: Props): ReactElement => {
           <Card
             card={player1}
             title={player1?.playerName}
-            cardRef=''
+            cardRef={player1Ref}
             restStyles='mt-3'
           />
           <ActionButton
