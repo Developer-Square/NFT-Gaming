@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useGlobalContext } from '../context';
 import { CustomButton, CustomInput, PageHOC } from '../components';
+import LandingPage from './LandingPage';
 
 const Home = (): ReactElement => {
   // @ts-ignore
@@ -16,7 +17,7 @@ const Home = (): ReactElement => {
       const playerExists = await contract?.isPlayer(walletAddress);
       if (!playerExists) {
         await contract?.registerPlayer(playerName, playerName, {
-          gasLimit: 200000,
+          gasLimit: 500000,
         });
         setShowAlert({
           status: true,
@@ -28,6 +29,13 @@ const Home = (): ReactElement => {
       setErrorMessage(error);
     }
   };
+
+  // Check for wallet address
+  useEffect(() => {
+    if (!window.ethereum || !walletAddress) {
+      navigate('/landing-page');
+    }
+  }, []);
 
   useEffect(() => {
     const checkForPlayerToken = async () => {

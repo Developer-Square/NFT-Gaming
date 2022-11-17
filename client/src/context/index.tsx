@@ -100,8 +100,10 @@ export const GlobalContextProvider = ({ children }) => {
 
     resetParams();
 
-    window.ethereum.on('chainChanged', () => resetParams());
-    window.ethereum.on('accountsChanged', () => resetParams());
+    if (window.ethereum)
+      window.ethereum.on('chainChanged', () => resetParams());
+    if (window.ethereum)
+      window.ethereum.on('accountsChanged', () => resetParams());
   }, []);
 
   // Handle error messages
@@ -126,9 +128,10 @@ export const GlobalContextProvider = ({ children }) => {
   }, [errorMessage]);
 
   useEffect(() => {
-    updateContractAddress();
-
-    window.ethereum.on('accountsChanged', updateContractAddress);
+    if (window.ethereum) {
+      updateContractAddress();
+      window.ethereum.on('accountsChanged', updateContractAddress);
+    }
   }, []);
 
   // Set the provider and smart contract to the state.

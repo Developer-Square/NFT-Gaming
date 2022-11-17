@@ -60,6 +60,7 @@ export const createEventListeners = ({
         type: 'success',
         message: 'Player has been successfully registered',
       });
+      navigate('/create-battle');
     }
   });
 
