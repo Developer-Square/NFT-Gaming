@@ -76,7 +76,6 @@ export const GlobalContextProvider = ({ children }) => {
     const accounts = await window.ethereum.request({
       method: 'eth_accounts',
     });
-    console.log(accounts);
     if (accounts) setWalletAddress(accounts[0]);
   };
 

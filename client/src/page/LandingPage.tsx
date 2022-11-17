@@ -22,7 +22,11 @@ const LandingPage = (props: Props) => {
       <br />
       <p className='mt-3'>
         Kindly follow the following link:{' '}
-        <a href='#' target='_blank' className='font-bold underline'>
+        <a
+          href='https://www.techive.org/how-to-play-the-online-multiplayer-card-game/'
+          target='_blank'
+          className='font-bold underline'
+        >
           Step by Step Guide
         </a>
       </p>
