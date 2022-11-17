@@ -10,11 +10,11 @@ const LandingPage = (props: Props) => {
   const navigate = useNavigate();
 
   // Check for wallet address
-  // useEffect(() => {
-  //   if (window.ethereum || walletAddress) {
-  //     navigate('/');
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (window.ethereum && walletAddress) {
+      navigate('/');
+    }
+  }, [walletAddress]);
   return (
     <div className='text-white font-rajdhani font-normal text-[24px]'>
       Disclaimer: You'll need to install Core wallet <br /> as a chrome

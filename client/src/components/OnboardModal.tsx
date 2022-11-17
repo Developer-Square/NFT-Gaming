@@ -6,16 +6,23 @@ import styles from '../styles';
 import { CustomButton } from '.';
 import { useGlobalContext } from '../context';
 import { GetParams, SwitchNetwork } from '../utils/onboard.js';
+import { useNavigate } from 'react-router-dom';
 
 const OnboardModal = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const { updateCurrentWalletAddress } = useGlobalContext();
   const [step, setStep] = useState(-1);
+  const navigate = useNavigate();
 
   async function resetParams() {
     const currentStep = await GetParams();
-    setStep(currentStep.step);
-    setIsOpen(currentStep.step !== -1);
+    if (currentStep.step === 0) {
+      navigate('/landing-page');
+      setIsOpen(false);
+    } else {
+      setStep(currentStep.step);
+      setIsOpen(currentStep.step !== -1);
+    }
   }
 
   useEffect(() => {
@@ -93,6 +100,7 @@ const OnboardModal = () => {
       isOpen={modalIsOpen}
       className={`absolute inset-0 ${styles.flexCenter} flex-col ${styles.glassEffect}`}
       overlayClassName='Overlay'
+      ariaHideApp={false}
     >
       {generateStep(step)}
     </Modal>

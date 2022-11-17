@@ -76,7 +76,7 @@ export const GlobalContextProvider = ({ children }) => {
     const accounts = await window.ethereum.request({
       method: 'eth_accounts',
     });
-
+    console.log(accounts);
     if (accounts) setWalletAddress(accounts[0]);
   };
 
@@ -146,7 +146,7 @@ export const GlobalContextProvider = ({ children }) => {
       setProvider(newProvider);
     };
 
-    setSmartContractAndProvider();
+    if (walletAddress) setSmartContractAndProvider();
   }, [walletAddress]);
 
   useEffect(() => {
