@@ -76,7 +76,6 @@ export const GlobalContextProvider = ({ children }) => {
     const accounts = await window.ethereum.request({
       method: 'eth_accounts',
     });
-
     if (accounts) setWalletAddress(accounts[0]);
   };
 
@@ -100,8 +99,10 @@ export const GlobalContextProvider = ({ children }) => {
 
     resetParams();
 
-    window.ethereum.on('chainChanged', () => resetParams());
-    window.ethereum.on('accountsChanged', () => resetParams());
+    if (window.ethereum)
+      window.ethereum.on('chainChanged', () => resetParams());
+    if (window.ethereum)
+      window.ethereum.on('accountsChanged', () => resetParams());
   }, []);
 
   // Handle error messages
@@ -126,9 +127,10 @@ export const GlobalContextProvider = ({ children }) => {
   }, [errorMessage]);
 
   useEffect(() => {
-    updateContractAddress();
-
-    window.ethereum.on('accountsChanged', updateContractAddress);
+    if (window.ethereum) {
+      updateContractAddress();
+      window.ethereum.on('accountsChanged', updateContractAddress);
+    }
   }, []);
 
   // Set the provider and smart contract to the state.
@@ -143,7 +145,7 @@ export const GlobalContextProvider = ({ children }) => {
       setProvider(newProvider);
     };
 
-    setSmartContractAndProvider();
+    if (walletAddress) setSmartContractAndProvider();
   }, [walletAddress]);
 
   useEffect(() => {

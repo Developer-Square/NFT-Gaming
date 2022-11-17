@@ -12,22 +12,37 @@ const Home = (): ReactElement => {
   const navigate = useNavigate();
 
   const handleClick = async () => {
-    try {
-      const playerExists = await contract?.isPlayer(walletAddress);
-      if (!playerExists) {
-        await contract?.registerPlayer(playerName, playerName, {
-          gasLimit: 200000,
-        });
-        setShowAlert({
-          status: true,
-          type: 'info',
-          message: `${playerName} is being summoned!`,
-        });
+    if (playerName.length) {
+      try {
+        const playerExists = await contract?.isPlayer(walletAddress);
+        if (!playerExists) {
+          await contract?.registerPlayer(playerName, playerName, {
+            gasLimit: 500000,
+          });
+          setShowAlert({
+            status: true,
+            type: 'info',
+            message: `${playerName} is being summoned!`,
+          });
+        }
+      } catch (error) {
+        setErrorMessage(error);
       }
-    } catch (error) {
-      setErrorMessage(error);
+    } else {
+      setShowAlert({
+        status: true,
+        type: 'failure',
+        message: 'Please enter a name!',
+      });
     }
   };
+
+  // Check for wallet address
+  useEffect(() => {
+    if (!window.ethereum && !walletAddress) {
+      navigate('/landing-page');
+    }
+  }, []);
 
   useEffect(() => {
     const checkForPlayerToken = async () => {

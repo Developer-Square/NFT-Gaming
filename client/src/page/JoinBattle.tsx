@@ -11,7 +11,6 @@ const JoinBattle = (props: Props): ReactElement => {
   const {
     gameData,
     walletAddress,
-    battleName,
     setBattleName,
     contract,
     setShowAlert,
